@@ -35,28 +35,52 @@ sudo pacman -S gtk4 cairo glib2 pango gdk-pixbuf2
 ### 1. Compilar versión CLI (recomendado para empezar)
 ```bash
 # Clonar el repositorio
-git clone <tu-repo>
+git clone https://github.com/Davidmctf/ui-openvpn-linux.git
 cd ui-openvpn-linux
 
 # Compilar versión CLI (sin GTK4)
 cargo build --no-default-features --release
 
-# Ejecutar
-./target/release/ui-openvpn
+# Configurar VPNs de ejemplo
+mkdir -p ~/.connectvpn.conf
+cp vpn_configs/*.ovpn ~/.connectvpn.conf/
 ```
 
-### 2. Compilar versión completa con GTK4
+### 2. Usar la aplicación CLI
+
+#### Comandos rápidos (sin interacción):
+```bash
+# Listar VPNs disponibles
+./target/release/ui-openvpn-cli list
+
+# Conectar VPN específica
+./target/release/ui-openvpn-cli connect David_cruz
+
+# Ver estado de conexión
+./target/release/ui-openvpn-cli status
+
+# Desconectar
+./target/release/ui-openvpn-cli disconnect
+
+# Ayuda
+./target/release/ui-openvpn-cli --help
+```
+
+#### Modo interactivo:
+```bash
+# Sin argumentos = modo interactivo
+./target/release/ui-openvpn-cli
+```
+
+### 3. Compilar versión completa con GTK4
 ```bash
 # Instalar dependencias GTK4 primero (ver sección Requisitos)
 
 # Compilar con UI gráfica
 cargo build --features ui --release
 
-# Ejecutar modo CLI
-./target/release/ui-openvpn
-
 # Ejecutar modo gráfico
-./target/release/ui-openvpn --gui
+./target/release/ui-openvpn-gtk --gui
 ```
 
 ## 🏗️ Arquitectura del Proyecto
@@ -132,16 +156,48 @@ La aplicación busca archivos de configuración VPN en:
 ## 💻 Modo de Uso
 
 ### CLI Interface
+
+#### Comandos disponibles:
 ```bash
-🔒 UI OpenVPN Linux - Gestión de VPNs
+# Ayuda completa
+ui-openvpn-cli --help
+
+# Listar VPNs
+ui-openvpn-cli list
+# Output:
+📋 VPNs disponibles:
+  🔴 Dynamic (David_cruz)
+  🔴 Howden (julian)
+  🔴 Unknown (example-vpn)
+
+# Conectar VPN
+ui-openvpn-cli connect David_cruz
+# Output:
+🔌 Conectando a VPN: David_cruz
+✅ ¡Conectado exitosamente a David_cruz!
+
+# Ver estado
+ui-openvpn-cli status
+# Output:
+📊 Estado de conexiones:
+  Dynamic - 🟢 Conectado
+  Howden - 🔴 Desconectado
+  Unknown - 🔴 Desconectado
+```
+
+#### Modo interactivo:
+```bash
+🚀 UI OpenVPN Linux (Modo CLI Simple)
 =====================================
-1) Listar VPNs disponibles
+
+🔒 Opciones disponibles:
+1) Listar VPNs
 2) Conectar VPN
-3) Desconectar VPN actual
-4) Ver estado de conexión
+3) Desconectar
+4) Estado
 5) Salir
 
-👉 Ingresa tu opción:
+👉 Opción (1-5):
 ```
 
 ### GTK4 Interface (cuando esté disponible)

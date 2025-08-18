@@ -45,6 +45,10 @@ default = ["ui"]
 ui = ["gtk4"]
 
 [[bin]]
-name = "ui-openvpn"
+name = "ui-openvpn-cli"
 path = "src/main.rs"
+
+[[bin]]
+name = "ui-openvpn-gtk"
+path = "src/main.rs" 
 required-features = ["ui"]
