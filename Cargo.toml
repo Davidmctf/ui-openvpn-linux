@@ -1,0 +1,50 @@
+[package]
+name = "ui-openvpn-linux"
+version = "0.1.0"
+edition = "2021"
+authors = ["osmiodev"]
+description = "Modern GUI for OpenVPN management on Linux"
+license = "MIT"
+repository = "https://github.com/osmiodev/ui-openvpn-linux"
+
+[dependencies]
+# Async runtime for non-blocking I/O operations with OpenVPN processes
+tokio = { version = "1.0", features = ["full"] }
+# Error handling with custom error types
+thiserror = "1.0"
+# Serialization for configuration files
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+# Async trait support
+async-trait = "0.1"
+
+[dependencies.gtk4]
+# UI Framework - GTK4 for native Linux desktop applications 
+version = "0.9"
+optional = true
+
+[dev-dependencies]
+# Testing framework
+tokio-test = "0.4"
+# Mocking framework for tests
+mockall = "0.12"
+# Async trait support for tests
+async-trait = "0.1"
+# Temporary directory for tests
+tempfile = "3.0"
+
+[profile.release]
+# Optimization for production builds
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+
+[features]
+default = ["ui"]
+ui = ["gtk4"]
+
+[[bin]]
+name = "ui-openvpn"
+path = "src/main.rs"
+required-features = ["ui"]
