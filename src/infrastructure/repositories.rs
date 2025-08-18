@@ -1,7 +1,7 @@
 use crate::domain::{entities::Vpn, repositories::VpnRepository};
 use async_trait::async_trait;
 use std::error::Error;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use tokio::fs;
 
 pub struct FileVpnRepository {
@@ -53,7 +53,7 @@ impl VpnRepository for FileVpnRepository {
         Ok(Some(vpn))
     }
 
-    async fn save(&self, vpn: &Vpn) -> Result<(), Box<dyn Error>> {
+    async fn save(&self, _vpn: &Vpn) -> Result<(), Box<dyn Error>> {
         // For now, we only update in-memory state
         // In a real implementation, this might update a metadata file
         Ok(())

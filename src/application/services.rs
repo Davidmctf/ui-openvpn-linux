@@ -22,8 +22,8 @@ pub enum VpnServiceError {
 pub struct VpnApplicationService {
     vpn_repository: Arc<dyn VpnRepository>,
     openvpn_service: Arc<OpenVpnService>,
-    connect_use_case: ConnectVpnUseCase,
-    disconnect_use_case: DisconnectVpnUseCase,
+    _connect_use_case: ConnectVpnUseCase,
+    _disconnect_use_case: DisconnectVpnUseCase,
     list_use_case: ListVpnsUseCase,
 }
 
@@ -39,8 +39,8 @@ impl VpnApplicationService {
         Self {
             vpn_repository,
             openvpn_service,
-            connect_use_case,
-            disconnect_use_case,
+            _connect_use_case: connect_use_case,
+            _disconnect_use_case: disconnect_use_case,
             list_use_case,
         }
     }
