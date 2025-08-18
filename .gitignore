@@ -15,11 +15,15 @@ Thumbs.db
 # Logs
 *.log
 
-# VPN configs (security)
-*.ovpn
+# VPN private keys and certificates (security)
 *.key
 *.crt
 *.pem
+
+# Allow .ovpn files in vpn_configs directory for public sharing
+# but exclude them elsewhere for security
+*.ovpn
+!vpn_configs/*.ovpn
 
 # Local test configs
 test_configs/

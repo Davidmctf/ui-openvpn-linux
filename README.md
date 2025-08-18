@@ -107,13 +107,27 @@ cargo test --no-default-features --test "*"
 
 ## 📁 Configuración
 
+### Opción 1: Usar archivos de ejemplo (Recomendado para pruebas)
+```bash
+# Copiar archivos de ejemplo desde el repo
+cp vpn_configs/*.ovpn ~/.connectvpn.conf/
+```
+
+### Opción 2: Configuración personalizada
 La aplicación busca archivos de configuración VPN en:
 ```
 ~/.connectvpn.conf/
-├── David_cruz.ovpn  → "Dynamic"
-├── julian.ovpn      → "Howden"  
-└── *.ovpn          → Otros archivos VPN
+├── tu-vpn-1.ovpn    → Tu primera VPN
+├── tu-vpn-2.ovpn    → Tu segunda VPN  
+└── *.ovpn           → Otros archivos VPN
 ```
+
+### Mapeo de nombres amigables:
+- `David_cruz.ovpn` → "Dynamic"
+- `julian.ovpn` → "Howden"
+- Otros archivos → Nombre basado en el archivo
+
+**Nota**: Solo sube archivos .ovpn a repositorios públicos. NUNCA subas archivos .key, .crt o .pem por seguridad.
 
 ## 💻 Modo de Uso
 
