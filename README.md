@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Stella UA OPENVPN](./2261aaaa-bad7-4426-8cc1-f93cd6c4c067.png)
+<img src="./2261aaaa-bad7-4426-8cc1-f93cd6c4c067.png" alt="Stella UA OPENVPN" width="300">
 
 ```
       🚀       🌟      🪐      
