@@ -29,14 +29,26 @@ impl OpenVpnService {
         // Kill existing connection if any
         self.disconnect().await?;
 
-        let mut cmd = Command::new("sudo");
-        cmd.arg("openvpn")
-           .args(self.build_openvpn_args(config_path))
-           .stdin(Stdio::null())
+        // Try pkexec first (GUI-friendly), fallback to sudo if not available
+        let mut cmd = if Command::new("pkexec").arg("--version").output().await.is_ok() {
+            let mut cmd = Command::new("pkexec");
+            cmd.arg("openvpn")
+               .args(self.build_openvpn_args(config_path));
+            cmd
+        } else {
+            let mut cmd = Command::new("sudo");
+            cmd.arg("openvpn")
+               .args(self.build_openvpn_args(config_path));
+            cmd
+        };
+        
+        cmd.stdin(Stdio::null())
            .stdout(Stdio::piped())
            .stderr(Stdio::piped());
 
-        let child = cmd.spawn()?;
+        let child = cmd.spawn().map_err(|e| {
+            format!("Failed to start OpenVPN process: {}. Make sure OpenVPN is installed and you have proper permissions.", e)
+        })?;
         
         {
             let mut process = self.process.lock().await;
