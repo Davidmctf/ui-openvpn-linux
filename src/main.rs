@@ -393,7 +393,7 @@ async fn run_gui_mode(
         window.show();
     });
 
-    app.run();
+    app.run_with_args(&Vec::<String>::new());
     Ok(())
 }
 

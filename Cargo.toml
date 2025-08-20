@@ -30,6 +30,8 @@ optional = true
 [dev-dependencies]
 # Testing framework
 tokio-test = "0.4"
+# Mocking framework for tests
+mockall = "0.12"
 # Temporary directory for tests
 tempfile = "3.0"
 
