@@ -388,6 +388,18 @@ async fn run_gui_mode(
         .application_id("com.davidmctf.ui-openvpn-linux")
         .build();
 
+    // Configurar icono de la aplicación
+    app.connect_startup(|_| {
+        // Configurar tema de iconos
+        if let Some(display) = gtk4::gdk::Display::default() {
+            let icon_theme = gtk4::IconTheme::for_display(&display);
+            // Añadir directorio de iconos personalizados
+            let home_dir = std::env::var("HOME").unwrap_or_else(|_| "/home".to_string());
+            let icon_path = format!("{}/.local/share/icons", home_dir);
+            icon_theme.add_search_path(&icon_path);
+        }
+    });
+
     app.connect_activate(move |app| {
         let window = MainWindow::new(app, Arc::clone(&vpn_service));
         window.show();

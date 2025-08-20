@@ -22,6 +22,9 @@ mod gtk_implementation {
                 .default_height(500)
                 .build();
 
+            // Establecer icono de la ventana
+            window.set_icon_name(Some("ui-openvpn-linux"));
+
             // Create header bar
             let header_bar = gtk4::HeaderBar::new();
             header_bar.set_title_widget(Some(&Label::new(Some("🚀 OpenVPN Manager"))));
@@ -132,7 +135,24 @@ mod gtk_implementation {
             let status = self.status_label.clone();
             
             glib::spawn_future_local(async move {
-                Self::refresh_vpn_list_async(service, list, status).await;
+                Self::refresh_vpn_list_async(service.clone(), list.clone(), status.clone()).await;
+            });
+
+            // Auto-refresh timer (every 5 seconds)
+            let service_timer = Arc::clone(&self.vpn_service);
+            let list_timer = self.vpn_list.clone();
+            let status_timer = self.status_label.clone();
+            
+            glib::timeout_add_seconds_local(5, move || {
+                let service = Arc::clone(&service_timer);
+                let list = list_timer.clone();
+                let status = status_timer.clone();
+                
+                glib::spawn_future_local(async move {
+                    Self::refresh_vpn_list_async(service, list, status).await;
+                });
+                
+                glib::ControlFlow::Continue
             });
         }
 
@@ -205,25 +225,37 @@ mod gtk_implementation {
                             let status_clone = status_label.clone();
                             let is_connected = vpn.is_connected();
 
+                            let list_clone_for_refresh = list.clone();
+                            let service_clone_for_refresh = Arc::clone(&service);
+                            
                             connect_btn.connect_clicked(move |_| {
                                 let service = Arc::clone(&service_clone);
                                 let status = status_clone.clone();
                                 let vpn_id = vpn_id.clone();
+                                let list_refresh = list_clone_for_refresh.clone();
+                                let service_refresh = Arc::clone(&service_clone_for_refresh);
                                 
                                 glib::spawn_future_local(async move {
                                     if is_connected {
                                         match service.disconnect_current().await {
                                             Ok(()) => {
                                                 status.set_text(&format!("✅ Disconnected from {}", vpn_id));
+                                                // Actualizar la GUI automáticamente
+                                                Self::refresh_vpn_list_async(service_refresh, list_refresh, status.clone()).await;
                                             },
                                             Err(e) => {
                                                 status.set_text(&format!("❌ Disconnect failed: {}", e));
                                             }
                                         }
                                     } else {
+                                        // Mostrar estado de conectando
+                                        status.set_text(&format!("🔄 Connecting to {}...", vpn_id));
+                                        
                                         match service.connect_vpn(&vpn_id).await {
                                             Ok(()) => {
                                                 status.set_text(&format!("✅ Connected to {}", vpn_id));
+                                                // Actualizar la GUI automáticamente
+                                                Self::refresh_vpn_list_async(service_refresh, list_refresh, status.clone()).await;
                                             },
                                             Err(e) => {
                                                 status.set_text(&format!("❌ Connect failed: {}", e));
