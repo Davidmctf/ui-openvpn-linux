@@ -1,261 +1,295 @@
-# UI OpenVPN Linux
+# 🚀 UI OpenVPN Linux
 
-Una interfaz gráfica moderna para gestionar conexiones VPN OpenVPN, creada con Rust y GTK4 siguiendo principios de Clean Architecture y TDD.
+<div align="center">
 
-## 🚀 Características
-
-- ✅ **Interfaz CLI** lista para usar
-- 🎨 **Interfaz GTK4** nativa de Linux
-- 🔒 **Gestión segura** de conexiones VPN
-- 📱 **Clean Architecture** - Código mantenible y testeable  
-- 🧪 **100% cobertura de tests** - TDD desde el primer día
-- ⚡ **Alto rendimiento** - Rust nativo sin overhead
-
-## 📋 Requisitos
-
-### Para la versión CLI (disponible ahora):
-- Rust 1.70+
-- OpenVPN instalado
-- Archivos de configuración VPN en `~/.connectvpn.conf/`
-
-### Para la versión GTK4 (requiere instalación adicional):
-```bash
-# Fedora/RHEL/CentOS
-sudo dnf install -y gtk4-devel cairo-devel glib2-devel pango-devel gdk-pixbuf2-devel
-
-# Ubuntu/Debian
-sudo apt install -y libgtk-4-dev libcairo2-dev libglib2.0-dev libpango1.0-dev libgdk-pixbuf-2.0-dev
-
-# Arch Linux
-sudo pacman -S gtk4 cairo glib2 pango gdk-pixbuf2
+```
+      🚀       🌟      🪐      
+         \       |     /       
+          \      |    /        
+           \     |   /         
+     🌟     ╔═══════╗      ⭐  
+            ║  👨‍🚀   ║           
+            ║ ┌─────┐║           
+     ⭐     ║ │💻🔐 │║      🌟  
+            ║ └─────┘║           
+            ╚═══════╝           
+             ╱     ╲            
+            ╱ 🚀🔧 ╲           
+           ╱_________╲          
+          🪐          🌟        
+                               
+  🚀 UI OpenVPN Linux v0.2.0 🚀   
+  ═══════════════════════════════════════
+  Professional VPN Management in Space! ✨
 ```
 
-## 🛠️ Instalación y Uso
+**Navigate through secure connections like an astronaut exploring cyberspace!**
 
-### 1. Compilar versión CLI (recomendado para empezar)
+[![Rust](https://img.shields.io/badge/rust-1.70+-orange.svg)](https://www.rust-lang.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Architecture](https://img.shields.io/badge/Architecture-Clean-blue.svg)](https://github.com/Davidmctf/ui-openvpn-linux)
+
+</div>
+
+Una aplicación moderna de gestión VPN desarrollada con Rust y Clean Architecture. Reemplaza scripts bash obsoletos con un gestor profesional de conexiones OpenVPN.
+
+## 🌟 Características Espaciales
+
+- 🚀 **Interfaz CLI profesional** con argumentos modernos y modo interactivo
+- 🛰️ **Arquitectura limpia** con separación de capas y principios SOLID
+- 🌌 **TDD al 100%** con tests unitarios e integración completos
+- ⭐ **Performance nativa** sin overhead de runtime
+- 🪐 **Interfaz GTK4** opcional para exploración visual
+- 🔐 **Seguridad espacial** con manejo seguro de conexiones VPN
+
+## 🚀 Instalación Rápida
+
+### Clonar desde el espacio (GitHub):
 ```bash
-# Clonar el repositorio
 git clone https://github.com/Davidmctf/ui-openvpn-linux.git
 cd ui-openvpn-linux
+```
 
-# Compilar versión CLI (sin GTK4)
-cargo build --no-default-features --release
+### Compilar el cohete:
+```bash
+# Compilar versión CLI (recomendado)
+cargo build --release
 
-# Configurar VPNs de ejemplo
+# Configurar base espacial VPN
 mkdir -p ~/.connectvpn.conf
 cp vpn_configs/*.ovpn ~/.connectvpn.conf/
 ```
 
-### 2. Usar la aplicación CLI
-
-#### Comandos rápidos (sin interacción):
+### ¡Despegar! 🚀
 ```bash
-# Listar VPNs disponibles
-./target/release/ui-openvpn-cli list
+# Ver todos los comandos de navegación
+./target/release/ui-openvpn --help
 
-# Conectar VPN específica
-./target/release/ui-openvpn-cli connect David_cruz
+# Explorar VPNs disponibles
+./target/release/ui-openvpn list
 
-# Ver estado de conexión
-./target/release/ui-openvpn-cli status
+# Conectar a estación espacial julian
+./target/release/ui-openvpn connect julian
 
-# Desconectar
-./target/release/ui-openvpn-cli disconnect
+# Verificar estado de la misión
+./target/release/ui-openvpn status
 
-# Ayuda
-./target/release/ui-openvpn-cli --help
+# Desconectar de la estación
+./target/release/ui-openvpn disconnect
 ```
 
-#### Modo interactivo:
+## 🛸 Comandos de Navegación Espacial
+
+### 🌌 **Exploración de VPNs:**
 ```bash
-# Sin argumentos = modo interactivo
-./target/release/ui-openvpn-cli
+# Listar todas las estaciones VPN
+ui-openvpn list
+
+# Información detallada de una estación
+ui-openvpn info julian
+
+# Validar configuraciones espaciales
+ui-openvpn validate
 ```
 
-### 3. Compilar versión completa con GTK4
+### 🚀 **Control de Misión:**
 ```bash
-# Instalar dependencias GTK4 primero (ver sección Requisitos)
+# Conectar a estación específica
+ui-openvpn connect David_cruz
 
-# Compilar con UI gráfica
-cargo build --features ui --release
+# Conectar con fuerza (override conexiones existentes)
+ui-openvpn connect julian --force
 
-# Ejecutar modo gráfico
-./target/release/ui-openvpn-gtk --gui
+# Desconectar de todas las estaciones
+ui-openvpn disconnect
+
+# Estado completo de la misión
+ui-openvpn status --verbose
 ```
 
-## 🏗️ Arquitectura del Proyecto
+### 🎮 **Modo Centro de Control (Interactivo):**
+```bash
+# Lanzar centro de control
+ui-openvpn
+
+# Comandos disponibles en el centro:
+vpn> help           # Ver comandos disponibles  
+vpn> list           # Listar VPNs
+vpn> connect julian # Conectar a julian
+vpn> status         # Ver estado
+vpn> disconnect     # Desconectar
+vpn> quit           # Salir del centro
+```
+
+### 🎨 **Interfaz Gráfica Espacial (GTK4):**
+```bash
+# Instalar sistemas de navegación visual
+sudo dnf install -y gtk4-devel cairo-devel glib2-devel pango-devel gdk-pixbuf2-devel
+
+# Compilar con sistemas gráficos
+cargo build --features gui --release
+
+# Lanzar interfaz espacial
+./target/release/ui-openvpn --gui
+```
+
+## 🏗️ Arquitectura de la Nave Espacial
 
 ```
 ┌─────────────────────────────────────────────┐
-│           UI Layer (GTK4/CLI)               │
+│     🎮 UI Layer (CLI/GTK4 Cockpit)         │
 │  ┌─────────────┐ ┌─────────────┐           │
-│  │ Components  │ │ Controllers │           │
-│  │ CLI         │ │   Events    │           │
+│  │ CLI Commands│ │ GTK4 Windows│           │  
+│  │ Interactive │ │  Components │           │
 │  └─────────────┘ └─────────────┘           │
 └─────────────────────────────────────────────┘
 ┌─────────────────────────────────────────────┐
-│       Application Layer                     │
+│      🚀 Application Layer (Mission Control)│
 │  ┌─────────────┐ ┌─────────────┐           │
-│  │  Services   │ │    DTOs     │           │
-│  │  Mappers    │ │ Orchestr.   │           │
+│  │ VPN Service │ │    DTOs     │           │
+│  │   Mappers   │ │ Orchestr.   │           │
 │  └─────────────┘ └─────────────┘           │
 └─────────────────────────────────────────────┘
 ┌─────────────────────────────────────────────┐
-│         Domain Layer (Core)                 │
+│       🛰️ Domain Layer (Core Systems)       │
 │  ┌─────────────┐ ┌─────────────┐           │
-│  │  Entities   │ │ Use Cases   │           │
+│  │ VPN Entity  │ │ Use Cases   │           │
 │  │ Repository  │ │ Interfaces  │           │
 │  └─────────────┘ └─────────────┘           │
 └─────────────────────────────────────────────┘
 ┌─────────────────────────────────────────────┐
-│      Infrastructure Layer                  │
+│    🔧 Infrastructure Layer (Engines)       │
 │  ┌─────────────┐ ┌─────────────┐           │
-│  │   OpenVPN   │ │ FileSystem  │           │
-│  │   System    │ │ Persistence │           │
+│  │   OpenVPN   │ │ File System │           │
+│  │   Process   │ │ Config Mgmt │           │
 │  └─────────────┘ └─────────────┘           │
 └─────────────────────────────────────────────┘
 ```
 
-## 🧪 Testing
+## 🌌 Configuración de Base Espacial
 
+### Configurar estaciones VPN:
 ```bash
-# Ejecutar todos los tests
-cargo test --no-default-features
-
-# Tests con coverage
-cargo test --no-default-features -- --nocapture
-
-# Tests de integración
-cargo test --no-default-features --test "*"
-```
-
-## 📁 Configuración
-
-### Opción 1: Usar archivos de ejemplo (Recomendado para pruebas)
-```bash
-# Copiar archivos de ejemplo desde el repo
-cp vpn_configs/*.ovpn ~/.connectvpn.conf/
-```
-
-### Opción 2: Configuración personalizada
-La aplicación busca archivos de configuración VPN en:
-```
+# Estructura de la base espacial
 ~/.connectvpn.conf/
-├── tu-vpn-1.ovpn    → Tu primera VPN
-├── tu-vpn-2.ovpn    → Tu segunda VPN  
-└── *.ovpn           → Otros archivos VPN
+├── David_cruz.ovpn     → "Dynamic Station"
+├── julian.ovpn         → "Howden Outpost"  
+└── *.ovpn              → Otras estaciones espaciales
 ```
 
-### Mapeo de nombres amigables:
-- `David_cruz.ovpn` → "Dynamic"
-- `julian.ovpn` → "Howden"
-- Otros archivos → Nombre basado en el archivo
-
-**Nota**: Solo sube archivos .ovpn a repositorios públicos. NUNCA subas archivos .key, .crt o .pem por seguridad.
-
-## 💻 Modo de Uso
-
-### CLI Interface
-
-#### Comandos disponibles:
+### Agregar nuevas estaciones:
 ```bash
-# Ayuda completa
-ui-openvpn-cli --help
+# Copiar configuraciones de misión
+cp mi-nueva-estacion.ovpn ~/.connectvpn.conf/
 
-# Listar VPNs
-ui-openvpn-cli list
-# Output:
-📋 VPNs disponibles:
-  🔴 Dynamic (David_cruz)
-  🔴 Howden (julian)
-  🔴 Unknown (example-vpn)
+# Verificar que la estación esté operativa
+ui-openvpn validate
 
-# Conectar VPN
-ui-openvpn-cli connect David_cruz
-# Output:
-🔌 Conectando a VPN: David_cruz
-✅ ¡Conectado exitosamente a David_cruz!
-
-# Ver estado
-ui-openvpn-cli status
-# Output:
-📊 Estado de conexiones:
-  Dynamic - 🟢 Conectado
-  Howden - 🔴 Desconectado
-  Unknown - 🔴 Desconectado
+# Explorar nueva estación
+ui-openvpn info mi-nueva-estacion
 ```
 
-#### Modo interactivo:
+## 🧪 Centro de Pruebas Espaciales
+
 ```bash
-🚀 UI OpenVPN Linux (Modo CLI Simple)
-=====================================
+# Ejecutar pruebas de sistemas
+cargo test
 
-🔒 Opciones disponibles:
-1) Listar VPNs
-2) Conectar VPN
-3) Desconectar
-4) Estado
-5) Salir
+# Ejecutar tests con reporte detallado
+cargo test --verbose
 
-👉 Opción (1-5):
-```
-
-### GTK4 Interface (cuando esté disponible)
-- Interfaz gráfica intuitiva
-- Notificaciones del sistema
-- System tray integration
-- Gestión visual de conexiones
-
-## 🔧 Desarrollo
-
-### Estructura del código:
-```
-src/
-├── domain/          # Lógica de negocio pura
-│   ├── entities.rs  # Entidades del dominio
-│   ├── use_cases.rs # Casos de uso
-│   └── repositories.rs # Interfaces
-├── application/     # Servicios de aplicación  
-│   ├── services.rs  # Orquestación
-│   ├── dtos.rs      # Data Transfer Objects
-│   └── mappers.rs   # Mapeo de datos
-├── infrastructure/ # Implementaciones concretas
-│   ├── repositories.rs # Persistencia
-│   └── services.rs  # OpenVPN integration
-└── ui/             # Interfaces de usuario
-    ├── cli.rs      # Interfaz CLI
-    ├── components.rs # Componentes GTK4
-    └── controllers.rs # Controladores GTK4
-```
-
-### Comandos de desarrollo:
-```bash
-# Formato
-cargo fmt
-
-# Linting  
+# Validar arquitectura completa
 cargo clippy
 
-# Build optimizado
-cargo build --release
-
-# Tests en modo watch
-cargo watch -x "test --no-default-features"
+# Formatear código según estándares espaciales
+cargo fmt
 ```
 
-## 📄 Licencia
+## 📡 Comandos de Ejemplo de Misión
 
-MIT License - Ver archivo LICENSE para detalles.
+### Misión típica de conexión:
+```bash
+# 1. Ver estaciones disponibles
+ui-openvpn list
 
-## 🤝 Contribuciones
+# Output:
+📋 Available VPN configurations:
+────────────────────────────────
+  🔴 Dynamic (David_cruz)
+  🔴 Howden (julian)  
+  🔴 Unknown (example-vpn)
 
-1. Fork el proyecto
-2. Crea una rama feature (`git checkout -b feature/AmazingFeature`)
-3. Asegúrate de que los tests pasen (`cargo test --no-default-features`)
-4. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-5. Push a la rama (`git push origin feature/AmazingFeature`)
-6. Abre un Pull Request
+# 2. Conectar a estación Howden
+ui-openvpn connect julian
+
+# Output:
+🔌 Connecting to VPN: julian
+✅ Successfully connected to julian!
+
+# 3. Verificar estado de la misión
+ui-openvpn status
+
+# Output:  
+📊 VPN Connection Status:
+─────────────────────────
+🔴 Dynamic - DISCONNECTED
+🟢 Howden - CONNECTED
+🔴 Unknown - DISCONNECTED
+```
+
+## 🌟 Comparación: Script Bash vs Nave Espacial Rust
+
+| Aspecto | Script Bash Antiguo | 🚀 UI OpenVPN Linux |
+|---------|---------------------|---------------------|
+| Interfaz | Menú básico numerado | CLI moderno + GUI opcional |
+| Arquitectura | Script monolítico | Clean Architecture en capas |
+| Seguridad | Básica | Rust memory-safe + validación |
+| Testing | Sin tests | TDD al 100% cobertura |
+| Performance | Lento (bash) | Nativo Rust ultra-rápido |
+| Escalabilidad | Limitada | Extensible profesionalmente |
+| Usabilidad | Tedioso | Comandos rápidos + interactivo |
+| Mantenimiento | Difícil | Código limpio y documentado |
+
+## 🚀 Requisitos del Sistema Espacial
+
+### Para Operación CLI:
+- Rust 1.70+
+- OpenVPN instalado
+- Configuraciones VPN en `~/.connectvpn.conf/`
+
+### Para Sistemas de Navegación Visual (GTK4):
+```bash
+# Fedora/RHEL/CentOS
+sudo dnf install -y gtk4-devel cairo-devel glib2-devel pango-devel
+
+# Ubuntu/Debian  
+sudo apt install -y libgtk-4-dev libcairo2-dev libglib2.0-dev libpango1.0-dev
+
+# Arch Linux
+sudo pacman -S gtk4 cairo glib2 pango
+```
+
+## 🛸 Contribuciones a la Misión
+
+1. **Fork** la nave espacial
+2. **Crea** una rama de características (`git checkout -b feature/AmazingSpaceFeature`)
+3. **Commit** tus mejoras (`git commit -m 'Add some AmazingSpaceFeature'`)
+4. **Push** a la rama (`git push origin feature/AmazingSpaceFeature`)
+5. **Abre** un Pull Request a la estación principal
+
+## 📄 Licencia Espacial
+
+MIT License - Libertad total para explorar el cosmos digital.
+
+## 🌌 Agradecimientos
+
+- **Astronauta Logo**: Inspirado en la exploración espacial y la navegación segura por el ciberespacio
+- **Clean Architecture**: Para mantener el código organizado como una estación espacial
+- **Rust Language**: Por la velocidad y seguridad de un cohete espacial
+- **OpenVPN**: Por las conexiones seguras a través del universo digital
 
 ---
 
-**Nota**: Este proyecto reemplaza el script bash `connectvpn` existente con una solución moderna, segura y extensible en Rust.
+**🚀 ¡Que tengas un buen viaje por el ciberespacio! ✨**
+
+*Desarrollado con amor espacial por [@Davidmctf](https://github.com/Davidmctf)*
