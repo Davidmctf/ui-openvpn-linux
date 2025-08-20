@@ -1,0 +1,75 @@
+name: Rust CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  check:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Toolchain estable y caché para acelerar builds
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+
+      - name: Build (debug)
+        run: cargo build --verbose
+      - name: Run tests
+        run: cargo test --all --verbose
+
+  binary:
+    name: Build release binary
+    runs-on: ubuntu-latest
+    needs: check
+    # Solo construir binario en push a main (no en PRs)
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+
+      - name: Build (release)
+        run: cargo build --release --verbose
+
+      # Sube los binarios compilados como artifact del workflow
+      - name: Upload binary artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-openvpn-linux-${{ runner.os }}-x86_64
+          path: |
+            target/release/*
+          if-no-files-found: error
+
+      # OPCIONAL: si prefieres usar rust-build.action para empaquetar/targets cruzados,
+      # comenta el bloque de build+upload anterior y descomenta este:
+      #
+      # - name: Build with rust-build.action
+      #   uses: rust-build/rust-build.action@v1.4.5
+      #   with:
+      #     # Target de salida (cambia si necesitas otro)
+      #     RUSTTARGET: x86_64-unknown-linux-gnu
+      #     TOOLCHAIN_VERSION: stable
+      #     # Evita crear un GitHub Release en cada push
+      #     UPLOAD_MODE: none
+      #
+      # - name: Upload packaged artifacts
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: ui-openvpn-linux-${{ runner.os }}-x86_64
+      #     path: |
+      #       dist/**
+      #       *.zip
+      #       *.tar.*
