@@ -18,7 +18,55 @@ impl OpenVpnService {
     }
 
     pub async fn is_connected(&self) -> bool {
-        *self.connected.lock().await
+        // Check both internal state and actual system processes
+        let internal_connected = *self.connected.lock().await;
+        let system_connected = self.check_system_openvpn_processes().await;
+        
+        // If system says connected but internal says not, sync the internal state
+        if system_connected && !internal_connected {
+            let mut connected = self.connected.lock().await;
+            *connected = true;
+        }
+        
+        // If system says disconnected but internal says connected, sync the internal state
+        if !system_connected && internal_connected {
+            let mut connected = self.connected.lock().await;
+            *connected = false;
+        }
+        
+        system_connected
+    }
+
+    async fn check_system_openvpn_processes(&self) -> bool {
+        self.get_connected_vpn_config().await.is_some()
+    }
+
+    pub async fn get_connected_vpn_config(&self) -> Option<String> {
+        use std::process::Command;
+        
+        // Check if any OpenVPN processes are running and get their config file
+        if let Ok(output) = Command::new("ps")
+            .args(&["aux"])
+            .output()
+        {
+            let output_str = String::from_utf8_lossy(&output.stdout);
+            // Look for OpenVPN processes (excluding grep itself)
+            for line in output_str.lines() {
+                if line.contains("/usr/bin/openvpn") && 
+                   line.contains("--config") && 
+                   !line.contains("grep") {
+                    // Extract the config file path from the ps output
+                    if let Some(config_start) = line.find("--config") {
+                        let config_part = &line[config_start + 8..]; // Skip "--config"
+                        if let Some(config_path) = config_part.trim().split_whitespace().next() {
+                            return Some(config_path.to_string());
+                        }
+                    }
+                }
+            }
+        }
+        
+        None
     }
 
     pub fn build_openvpn_args(&self, config_path: &str) -> Vec<String> {
@@ -95,6 +143,62 @@ impl OpenVpnService {
             (false, false) => ConnectionStatus::Disconnected,
             (true, false) => ConnectionStatus::Error("Connected flag set but no process found".to_string()),
             (false, true) => ConnectionStatus::Connecting,
+        }
+    }
+
+    pub async fn force_kill_all(&self) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+        use std::process::Command;
+
+        // First try to kill any processes we're tracking
+        {
+            let mut process_guard = self.process.lock().await;
+            if let Some(mut child) = process_guard.take() {
+                let _ = child.kill().await; // Ignore errors
+            }
+        }
+
+        // Force kill all system OpenVPN processes with sudo
+        let kill_commands = [
+            // Try pkill first (more targeted)
+            vec!["pkill", "-f", "openvpn"],
+            // Then try killall as fallback
+            vec!["killall", "openvpn"],
+            // Finally try with sudo for system processes
+            vec!["sudo", "pkill", "-9", "-f", "openvpn"],
+            vec!["sudo", "killall", "-9", "openvpn"],
+        ];
+
+        let mut killed_any = false;
+
+        for cmd_args in &kill_commands {
+            if let Ok(output) = Command::new(cmd_args[0])
+                .args(&cmd_args[1..])
+                .output()
+            {
+                if output.status.success() {
+                    killed_any = true;
+                }
+            }
+            
+            // Small delay between attempts
+            tokio::time::sleep(tokio::time::Duration::from_millis(200)).await;
+            
+            // Check if any processes are still running
+            if !self.check_system_openvpn_processes().await {
+                break; // All processes killed
+            }
+        }
+
+        // Update internal state
+        {
+            let mut connected = self.connected.lock().await;
+            *connected = false;
+        }
+
+        if killed_any || !self.check_system_openvpn_processes().await {
+            Ok(())
+        } else {
+            Err("Failed to kill OpenVPN processes. Try running with sudo or check if processes exist.".into())
         }
     }
 }

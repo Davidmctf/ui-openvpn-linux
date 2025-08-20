@@ -46,17 +46,49 @@ impl VpnApplicationService {
     }
 
     pub async fn list_vpns(&self) -> Result<Vec<Vpn>, VpnServiceError> {
-        self.list_use_case
+        let mut vpns = self.list_use_case
             .execute()
             .await
-            .map_err(|e| VpnServiceError::RepositoryError(e.to_string()))
+            .map_err(|e| VpnServiceError::RepositoryError(e.to_string()))?;
+
+        // Update VPN status based on actual system state
+        self.sync_vpn_states(&mut vpns).await?;
+        
+        Ok(vpns)
+    }
+
+    async fn sync_vpn_states(&self, vpns: &mut Vec<Vpn>) -> Result<(), VpnServiceError> {
+        // Get the currently connected VPN config file (if any)
+        let connected_config = self.openvpn_service.get_connected_vpn_config().await;
+        
+        for vpn in vpns.iter_mut() {
+            let should_be_connected = match &connected_config {
+                Some(config_path) => vpn.config_path() == config_path,
+                None => false,
+            };
+            
+            // Update VPN status based on actual system state
+            let new_state = if should_be_connected {
+                ConnectionState::Connected
+            } else {
+                ConnectionState::Disconnected
+            };
+            
+            // Only update if the state has changed
+            if vpn.is_connected() != should_be_connected {
+                vpn.update_status(VpnStatus::new(new_state, String::new()));
+            }
+        }
+        
+        Ok(())
     }
 
     pub async fn connect_vpn(&self, vpn_id: &str) -> Result<(), VpnServiceError> {
-        // First disconnect any existing connection
-        if self.openvpn_service.is_connected().await {
-            self.disconnect_current().await?;
-        }
+        // ALWAYS force kill all VPN processes to ensure only one connection
+        self.force_kill_all_vpns().await?;
+        
+        // Small delay to ensure processes are fully terminated
+        tokio::time::sleep(tokio::time::Duration::from_millis(500)).await;
 
         // Get VPN configuration
         let vpn = self
@@ -152,5 +184,31 @@ impl VpnApplicationService {
     pub async fn get_connection_status(&self) -> Result<Vec<Vpn>, VpnServiceError> {
         let vpns = self.list_vpns().await?;
         Ok(vpns)
+    }
+
+    pub async fn force_kill_all_vpns(&self) -> Result<(), VpnServiceError> {
+        // Force kill all OpenVPN processes using system commands
+        self.openvpn_service
+            .force_kill_all()
+            .await
+            .map_err(|e| VpnServiceError::OpenVpnError(e.to_string()))?;
+
+        // Update all VPNs status to disconnected
+        let vpns = self.list_use_case
+            .execute()
+            .await
+            .map_err(|e| VpnServiceError::RepositoryError(e.to_string()))?;
+            
+        for mut vpn in vpns {
+            if vpn.is_connected() || vpn.is_connecting() {
+                vpn.update_status(VpnStatus::new(ConnectionState::Disconnected, String::new()));
+                self.vpn_repository
+                    .save(&vpn)
+                    .await
+                    .map_err(|e| VpnServiceError::RepositoryError(e.to_string()))?;
+            }
+        }
+
+        Ok(())
     }
 }
