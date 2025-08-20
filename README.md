@@ -36,6 +36,7 @@ curl -sSL https://raw.githubusercontent.com/Davidmctf/ui-openvpn-linux/main/inst
 - ✅ Todas las dependencias del sistema (GTK4, OpenVPN, etc.)
 - ✅ Clona y compila la aplicación
 - ✅ Instala el binario globalmente
+- ✅ Crea icono en el escritorio y menú de aplicaciones
 - ✅ Crea aliases útiles (vpn, vpn-list, etc.)
 - ✅ Configura directorios VPN
 
@@ -62,6 +63,8 @@ vpn connect julian               # Conectar a estación julian
 vpn status                       # Verificar estado de la misión
 vpn disconnect                   # Desconectar de la estación
 vpn-gui                          # Abrir interfaz gráfica
+
+# ¡O simplemente busca "UI OpenVPN Linux" en tu menú de aplicaciones! 🚀
 
 # Si instalaste manualmente:
 ./target/release/ui-openvpn --help
