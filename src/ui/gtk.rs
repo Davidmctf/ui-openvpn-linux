@@ -2,10 +2,8 @@
 mod gtk_implementation {
     use crate::application::services::VpnApplicationService;
     use gtk4::prelude::*;
-    use gtk4::{Application, ApplicationWindow, Box as GtkBox, Button, Label, ListBox, Orientation, ScrolledWindow};
+    use gtk4::{glib, Application, ApplicationWindow, Box as GtkBox, Button, Label, ListBox, Orientation, ScrolledWindow};
     use std::sync::Arc;
-    use std::cell::RefCell;
-    use std::rc::Rc;
 
     pub struct MainWindow {
         window: ApplicationWindow,

@@ -2,6 +2,8 @@
 
 <div align="center">
 
+![Stella UA OPENVPN](./2261aaaa-bad7-4426-8cc1-f93cd6c4c067.png)
+
 ```
       🚀       🌟      🪐      
          \       |     /       
@@ -42,17 +44,29 @@ Una aplicación moderna de gestión VPN desarrollada con Rust y Clean Architectu
 - 🪐 **Interfaz GTK4** opcional para exploración visual
 - 🔐 **Seguridad espacial** con manejo seguro de conexiones VPN
 
-## 🚀 Instalación Rápida
+## 🚀 Instalación Ultra-Rápida (Un Solo Comando)
 
-### Clonar desde el espacio (GitHub):
+### 🌟 Instalación Automática Completa:
 ```bash
-git clone https://github.com/Davidmctf/ui-openvpn-linux.git
-cd ui-openvpn-linux
+# Instala TODO (Rust, dependencias, compila y configura)
+curl -sSL https://raw.githubusercontent.com/Davidmctf/ui-openvpn-linux/main/install.sh | bash
 ```
 
-### Compilar el cohete:
+**¡Eso es todo! El script instala automáticamente:**
+- ✅ Rust y Cargo
+- ✅ Todas las dependencias del sistema (GTK4, OpenVPN, etc.)
+- ✅ Clona y compila la aplicación
+- ✅ Instala el binario globalmente
+- ✅ Crea aliases útiles (vpn, vpn-list, etc.)
+- ✅ Configura directorios VPN
+
+### 🛠️ Instalación Manual (si prefieres control total):
 ```bash
-# Compilar versión CLI (recomendado)
+# Clonar desde el espacio (GitHub)
+git clone https://github.com/Davidmctf/ui-openvpn-linux.git
+cd ui-openvpn-linux
+
+# Compilar el cohete
 cargo build --release
 
 # Configurar base espacial VPN
@@ -62,20 +76,18 @@ cp vpn_configs/*.ovpn ~/.connectvpn.conf/
 
 ### ¡Despegar! 🚀
 ```bash
-# Ver todos los comandos de navegación
+# Después de instalación automática (comandos globales):
+ui-openvpn --help                # Ver todos los comandos
+vpn list                         # Explorar VPNs (alias corto)
+vpn connect julian               # Conectar a estación julian
+vpn status                       # Verificar estado de la misión
+vpn disconnect                   # Desconectar de la estación
+vpn-gui                          # Abrir interfaz gráfica
+
+# Si instalaste manualmente:
 ./target/release/ui-openvpn --help
-
-# Explorar VPNs disponibles
 ./target/release/ui-openvpn list
-
-# Conectar a estación espacial julian
 ./target/release/ui-openvpn connect julian
-
-# Verificar estado de la misión
-./target/release/ui-openvpn status
-
-# Desconectar de la estación
-./target/release/ui-openvpn disconnect
 ```
 
 ## 🛸 Comandos de Navegación Espacial
