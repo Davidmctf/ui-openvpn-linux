@@ -4,27 +4,6 @@
 
 <img src="./2261aaaa-bad7-4426-8cc1-f93cd6c4c067.png" alt="Stella UA OPENVPN" width="300">
 
-```
-      🚀       🌟      🪐      
-         \       |     /       
-          \      |    /        
-           \     |   /         
-     🌟     ╔═══════╗      ⭐  
-            ║  👨‍🚀   ║           
-            ║ ┌─────┐║           
-     ⭐     ║ │💻🔐 │║      🌟  
-            ║ └─────┘║           
-            ╚═══════╝           
-             ╱     ╲            
-            ╱ 🚀🔧 ╲           
-           ╱_________╲          
-          🪐          🌟        
-                               
-  🚀 UI OpenVPN Linux v0.2.0 🚀   
-  ═══════════════════════════════════════
-  Professional VPN Management in Space! ✨
-```
-
 **Navigate through secure connections like an astronaut exploring cyberspace!**
 
 [![Rust](https://img.shields.io/badge/rust-1.70+-orange.svg)](https://www.rust-lang.org)
