@@ -69,6 +69,28 @@ impl OpenVpnService {
         None
     }
 
+    async fn get_openvpn_pids(&self) -> Option<Vec<u32>> {
+        use std::process::Command;
+        
+        // Get PIDs of OpenVPN processes
+        if let Ok(output) = Command::new("pgrep")
+            .args(&["-f", "openvpn"])
+            .output()
+        {
+            let output_str = String::from_utf8_lossy(&output.stdout);
+            let pids: Vec<u32> = output_str
+                .lines()
+                .filter_map(|line| line.trim().parse().ok())
+                .collect();
+            
+            if !pids.is_empty() {
+                return Some(pids);
+            }
+        }
+        
+        None
+    }
+
     pub fn build_openvpn_args(&self, config_path: &str) -> Vec<String> {
         vec!["--config".to_string(), config_path.to_string()]
     }
@@ -124,8 +146,15 @@ impl OpenVpnService {
                 eprintln!("Failed to wait for OpenVPN process: {}", e);
             }
         }
+        
+        // Drop the lock before calling force_kill_all
+        drop(process_guard);
 
-        {
+        // Also force kill any system processes that might still be running
+        if self.check_system_openvpn_processes().await {
+            self.force_kill_all().await?;
+        } else {
+            // Update internal state if no processes found
             let mut connected = self.connected.lock().await;
             *connected = false;
         }
@@ -157,35 +186,64 @@ impl OpenVpnService {
             }
         }
 
-        // Force kill all system OpenVPN processes with sudo
+        // Force kill all system OpenVPN processes 
         let kill_commands = [
-            // Try pkill first (more targeted)
-            vec!["pkill", "-f", "openvpn"],
-            // Then try killall as fallback
+            // Try pkexec first (GUI-friendly, doesn't need terminal)
+            vec!["pkexec", "pkill", "-9", "-f", "openvpn"],
+            vec!["pkexec", "killall", "-9", "openvpn"],
+            // Try user-level kills
+            vec!["pkill", "-9", "-f", "openvpn"],
+            vec!["killall", "-9", "openvpn"],
+            vec!["pkill", "-f", "/usr/bin/openvpn"],
             vec!["killall", "openvpn"],
-            // Finally try with sudo for system processes
-            vec!["sudo", "pkill", "-9", "-f", "openvpn"],
-            vec!["sudo", "killall", "-9", "openvpn"],
+            // Try getting the PID and killing it directly
+            vec!["sh", "-c", "pkill -9 -f 'openvpn --config'"],
+            vec!["sh", "-c", "killall -9 openvpn 2>/dev/null || true"],
         ];
 
         let mut killed_any = false;
 
-        for cmd_args in &kill_commands {
-            if let Ok(output) = Command::new(cmd_args[0])
-                .args(&cmd_args[1..])
-                .output()
-            {
-                if output.status.success() {
-                    killed_any = true;
+        // First try to get PIDs and kill them directly
+        if let Some(pids) = self.get_openvpn_pids().await {
+            for pid in pids {
+                let pid_str = pid.to_string();
+                
+                // Try to kill each PID directly
+                let kill_pid_commands = [
+                    vec!["pkexec", "kill", "-9", &pid_str],
+                    vec!["kill", "-9", &pid_str],
+                ];
+                
+                for cmd in &kill_pid_commands {
+                    if let Ok(output) = Command::new(cmd[0]).args(&cmd[1..]).output() {
+                        if output.status.success() {
+                            killed_any = true;
+                            break;
+                        }
+                    }
                 }
             }
-            
-            // Small delay between attempts
-            tokio::time::sleep(tokio::time::Duration::from_millis(200)).await;
-            
-            // Check if any processes are still running
-            if !self.check_system_openvpn_processes().await {
-                break; // All processes killed
+        }
+
+        // If PID killing didn't work, try the generic commands
+        if self.check_system_openvpn_processes().await {
+            for cmd_args in &kill_commands {
+                if let Ok(output) = Command::new(cmd_args[0])
+                    .args(&cmd_args[1..])
+                    .output()
+                {
+                    if output.status.success() {
+                        killed_any = true;
+                    }
+                }
+                
+                // Small delay between attempts
+                tokio::time::sleep(tokio::time::Duration::from_millis(200)).await;
+                
+                // Check if any processes are still running
+                if !self.check_system_openvpn_processes().await {
+                    break; // All processes killed
+                }
             }
         }
 
