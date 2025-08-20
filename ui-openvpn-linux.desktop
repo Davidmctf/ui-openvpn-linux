@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=UI OpenVPN Linux
+Comment=Modern VPN Manager with Space Theme
+Exec=ui-openvpn --gui
+Icon=ui-openvpn-linux
+Terminal=false
+Type=Application
+Categories=Network;Security;
+Keywords=vpn;openvpn;network;security;connection;astronaut;space;
+StartupNotify=true
+StartupWMClass=ui-openvpn

@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<img src="./2261aaaa-bad7-4426-8cc1-f93cd6c4c067.png" alt="Stella UA OPENVPN" width="300">
+<img src="./assets/2261aaaa-bad7-4426-8cc1-f93cd6c4c067.png" alt="Stella UA OPENVPN" width="300">
 
 **Navigate through secure connections like an astronaut exploring cyberspace!**
 

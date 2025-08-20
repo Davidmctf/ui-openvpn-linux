@@ -263,6 +263,38 @@ install_globally() {
     log_success "Binario instalado en $install_dir/ui-openvpn"
 }
 
+# Instalar icono y desktop file
+install_desktop_integration() {
+    log_step "Instalando integración con el escritorio..."
+    
+    local apps_dir="$HOME/.local/share/applications"
+    local icons_dir="$HOME/.local/share/icons"
+    
+    mkdir -p "$apps_dir"
+    mkdir -p "$icons_dir"
+    
+    # Instalar icono (usar el PNG que ya tienes)
+    if [ -f "assets/2261aaaa-bad7-4426-8cc1-f93cd6c4c067.png" ]; then
+        cp "assets/2261aaaa-bad7-4426-8cc1-f93cd6c4c067.png" "$icons_dir/ui-openvpn-linux.png"
+        log_success "Icono instalado: $icons_dir/ui-openvpn-linux.png"
+    fi
+    
+    # Instalar desktop file
+    if [ -f "ui-openvpn-linux.desktop" ]; then
+        cp "ui-openvpn-linux.desktop" "$apps_dir/"
+        chmod +x "$apps_dir/ui-openvpn-linux.desktop"
+        
+        # Actualizar base de datos de aplicaciones
+        if command -v update-desktop-database &> /dev/null; then
+            update-desktop-database "$apps_dir" 2>/dev/null || true
+        fi
+        
+        log_success "Acceso directo instalado en el menú de aplicaciones"
+    fi
+    
+    log_info "🚀 La aplicación ahora aparecerá en tu menú de aplicaciones"
+}
+
 # Crear alias útiles
 create_aliases() {
     log_step "Creando aliases útiles..."
@@ -362,6 +394,7 @@ main() {
     compile_application
     setup_vpn_config
     install_globally
+    install_desktop_integration
     create_aliases
     verify_installation
     
