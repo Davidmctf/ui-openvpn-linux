@@ -365,16 +365,9 @@ fn install_system() -> Result<()> {
     
     // 2. No aliases needed - keep original syntax
     
-    // 3. Create desktop entry if web features available
-    #[cfg(feature = "web")]
-    {
-        println!("🖥️  Creating desktop entry...");
-        if let Err(e) = desktop_app::create_desktop_entry() {
-            println!("⚠️  Could not create desktop entry: {}", e);
-        } else {
-            println!("✅ Desktop entry created successfully!");
-        }
-    }
+    // 3. Desktop entry is created by install-clean.sh script
+    // No need to create here to avoid duplicates
+    println!("ℹ️  Desktop entry handled by installation script");
     
     println!("\n🎉 Installation completed!");
     println!("📋 Available commands:");

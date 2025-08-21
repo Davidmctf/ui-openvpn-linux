@@ -29,10 +29,13 @@ remove_file "/usr/bin/openvpn-manager"
 remove_file "$HOME/.local/bin/openvpn-manager"
 remove_file "$HOME/.cargo/bin/openvpn-manager"
 
-# 2. Remove desktop entries and icons
+# 2. Remove desktop entries and icons (both possible names)
 remove_file "$HOME/.local/share/applications/openvpn-manager.desktop"
+remove_file "$HOME/.local/share/applications/ui-openvpn-linux.desktop"
 remove_file "/usr/share/applications/openvpn-manager.desktop"
+remove_file "/usr/share/applications/ui-openvpn-linux.desktop"
 remove_file "$HOME/Desktop/openvpn-manager.desktop"
+remove_file "$HOME/Desktop/ui-openvpn-linux.desktop"
 remove_file "$HOME/.local/share/icons/hicolor/256x256/apps/openvpn-manager.png"
 remove_file "$HOME/.local/share/pixmaps/openvpn-manager.png"
 
