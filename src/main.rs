@@ -58,8 +58,19 @@ enum Commands {
     Install,
 }
 
+#[cfg(feature = "web")]
 #[tokio::main]
 async fn main() -> Result<()> {
+    run().await
+}
+
+#[cfg(not(feature = "web"))]
+fn main() -> Result<()> {
+    run_sync()
+}
+
+#[cfg(feature = "web")]
+async fn run() -> Result<()> {
     let cli = Cli::parse();
 
     match cli.command {
@@ -75,6 +86,22 @@ async fn main() -> Result<()> {
         Commands::Desktop => launch_desktop().await?,
         #[cfg(feature = "web")]
         Commands::Install => install_desktop()?,
+    }
+
+    Ok(())
+}
+
+#[cfg(not(feature = "web"))]
+fn run_sync() -> Result<()> {
+    let cli = Cli::parse();
+
+    match cli.command {
+        Commands::List => list_connections()?,
+        Commands::Import { file } => import_vpn(&file)?,
+        Commands::Connect { name } => connect_vpn(&name)?,
+        Commands::Disconnect => disconnect_vpn()?,
+        Commands::Status => show_status()?,
+        Commands::Remove { name } => remove_vpn(&name)?,
     }
 
     Ok(())

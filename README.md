@@ -114,7 +114,7 @@ vpn list                 # = openvpn-manager list
 vpn connect julian       # = openvpn-manager connect julian
 vpn disconnect          # = openvpn-manager disconnect  
 vpn status             # = openvpn-manager status
-vpn-gui               # = openvpn-manager desktop
+vpn-web               # = openvpn-manager web
 ```
 
 ## 🧬 Arquitectura del Proyecto
@@ -123,8 +123,8 @@ vpn-gui               # = openvpn-manager desktop
 ┌─────────────────────────────────────────────┐
 │     🎮 UI Layer (Multi-Interface)          │
 │  ┌─────────────┐ ┌─────────────┐           │
-│  │ Tauri Native│ │ Web Spatial │           │  
-│  │ CLI Modern  │ │Desktop Wrap │           │
+│  │ CLI Modern  │ │ Web Spatial │           │  
+│  │ Interface   │ │Desktop Wrap │           │
 │  └─────────────┘ └─────────────┘           │
 └─────────────────────────────────────────────┘
 ┌─────────────────────────────────────────────┐
@@ -180,7 +180,7 @@ cp mi-nueva-estacion.ovpn ~/.connectvpn.conf/
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 # Dependencias sistema (Fedora)
-sudo dnf install -y NetworkManager openvpn NetworkManager-openvpn webkit2gtk4.0-devel
+sudo dnf install -y NetworkManager openvpn NetworkManager-openvpn
 ```
 
 ### Compilar:
@@ -192,8 +192,8 @@ cd ui-openvpn-linux
 cargo build --release --features web
 
 # Tauri native app  
-cd src-tauri && cargo tauri dev    # Development
-cd src-tauri && cargo tauri build  # Production + packages
+cargo run --features web web       # Development
+cargo build --release --features web  # Production
 ```
 
 ### Testing:
@@ -207,7 +207,7 @@ cargo fmt                     # Format code
 
 ### Paquetes Automáticos (Tauri):
 ```bash
-cd src-tauri && cargo tauri build
+cargo build --release --features web
 
 # Genera automáticamente:
 # - .deb para Ubuntu/Debian
