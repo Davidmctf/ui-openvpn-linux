@@ -75,9 +75,18 @@ if [ -d "target" ]; then
     rm -rf target/
 fi
 
-# 9. Update desktop database
+# 9. Clean desktop cache and update database
+if command -v gtk-update-icon-cache &> /dev/null; then
+    gtk-update-icon-cache -f -t "$HOME/.local/share/icons/hicolor" 2>/dev/null || true
+fi
+
 if command -v update-desktop-database &> /dev/null; then
     update-desktop-database "$HOME/.local/share/applications" 2>/dev/null || true
+fi
+
+# Force refresh desktop entries
+if command -v xdg-desktop-menu &> /dev/null; then
+    xdg-desktop-menu forceupdate 2>/dev/null || true
 fi
 
 # 10. Kill any running processes

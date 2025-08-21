@@ -21,6 +21,16 @@ pub async fn run_web_gui() {
                 "image/png",
             )
         });
+
+    let favicon = warp::path("favicon.ico")
+        .map(|| {
+            // Servir el favicon
+            warp::reply::with_header(
+                &include_bytes!("../../assets/openvpn-manager-logo.png")[..],
+                "content-type",
+                "image/x-icon",
+            )
+        });
     
     // API para listar VPNs
     let api_list = warp::path!("api" / "vpns")
@@ -63,6 +73,7 @@ pub async fn run_web_gui() {
     
     let routes = index
         .or(logo)
+        .or(favicon)
         .or(api_list)
         .or(api_status)
         .or(api_connect)
@@ -318,6 +329,7 @@ const HTML_INTERFACE: &str = r#"
 <head>
     <title>🚀 UI OpenVPN Linux - Navegador Espacial</title>
     <meta charset="UTF-8">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <style>
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 

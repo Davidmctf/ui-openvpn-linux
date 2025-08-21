@@ -104,7 +104,7 @@ mkdir -p ~/.local/share/applications
 
 cat > ~/.local/share/applications/openvpn-manager.desktop << 'EOF'
 [Desktop Entry]
-Name=🚀 OpenVPN Manager
+Name=OpenVPN Manager
 Comment=🌌 Navegador Espacial de Conexiones VPN
 Exec=openvpn-manager web
 Icon=openvpn-manager
