@@ -37,6 +37,11 @@ remove_file "/usr/share/applications/ui-openvpn-linux.desktop"
 remove_file "$HOME/Desktop/openvpn-manager.desktop"
 remove_file "$HOME/Desktop/ui-openvpn-linux.desktop"
 remove_file "$HOME/.local/share/icons/hicolor/256x256/apps/openvpn-manager.png"
+remove_file "$HOME/.local/share/icons/hicolor/128x128/apps/openvpn-manager.png"
+remove_file "$HOME/.local/share/icons/hicolor/64x64/apps/openvpn-manager.png"
+remove_file "$HOME/.local/share/icons/hicolor/48x48/apps/openvpn-manager.png"
+remove_file "$HOME/.local/share/icons/hicolor/32x32/apps/openvpn-manager.png"
+remove_file "$HOME/.local/share/icons/hicolor/16x16/apps/openvpn-manager.png"
 remove_file "$HOME/.local/share/pixmaps/openvpn-manager.png"
 
 # 3. Remove any created config directories

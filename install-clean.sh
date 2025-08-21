@@ -88,14 +88,33 @@ else
     exit 1
 fi
 
-# Install logo
+# Install logo in multiple sizes
 echo "🎨 Installing app logo..."
-mkdir -p ~/.local/share/icons/hicolor/256x256/apps
+mkdir -p ~/.local/share/icons/hicolor/{16x16,32x32,48x48,64x64,128x128,256x256}/apps
+mkdir -p ~/.local/share/pixmaps
+
 if [ -f "assets/openvpn-manager-logo.png" ]; then
+    # Copy to all standard icon sizes
     cp assets/openvpn-manager-logo.png ~/.local/share/icons/hicolor/256x256/apps/openvpn-manager.png
-    echo "✅ Logo installed"
+    cp assets/openvpn-manager-logo.png ~/.local/share/icons/hicolor/128x128/apps/openvpn-manager.png
+    cp assets/openvpn-manager-logo.png ~/.local/share/icons/hicolor/64x64/apps/openvpn-manager.png
+    cp assets/openvpn-manager-logo.png ~/.local/share/icons/hicolor/48x48/apps/openvpn-manager.png
+    cp assets/openvpn-manager-logo.png ~/.local/share/icons/hicolor/32x32/apps/openvpn-manager.png
+    cp assets/openvpn-manager-logo.png ~/.local/share/icons/hicolor/16x16/apps/openvpn-manager.png
+    
+    # Also copy to pixmaps for older systems
+    cp assets/openvpn-manager-logo.png ~/.local/share/pixmaps/openvpn-manager.png
+    
+    echo "✅ Logo installed in multiple sizes"
 else
     echo "⚠️  Logo not found, using default icon"
+fi
+
+# Update icon cache
+echo "🔄 Updating icon cache..."
+if command -v gtk-update-icon-cache &> /dev/null; then
+    gtk-update-icon-cache -f -t ~/.local/share/icons/hicolor 2>/dev/null || true
+    echo "✅ Icon cache updated"
 fi
 
 # Create desktop entry
