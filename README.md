@@ -174,12 +174,18 @@ cp mi-nueva-estacion.ovpn ~/.connectvpn.conf/
 
 ## 🚀 Instalación
 
-### Instalación Automática (Recomendada):
+### 🚀 Instalación Automática (Recomendada):
 ```bash
 git clone https://github.com/Davidmctf/ui-openvpn-linux.git
 cd ui-openvpn-linux
-./install.sh
+./install-clean.sh
 ```
+
+### 🗑️ Desinstalar Completamente:
+```bash
+./uninstall.sh
+```
+**Elimina todo:** binarios, desktop entries, aliases, configuraciones, cache
 
 ### Instalación Manual:
 
@@ -209,6 +215,10 @@ cargo build --release --features web
 # Instalar globalmente
 sudo cp target/release/openvpn-manager /usr/local/bin/
 ```
+
+## 🎨 Logo y Recursos
+
+El logo de la aplicación se encuentra en `assets/openvpn-manager-logo.png` y se instala automáticamente con el script de instalación, apareciendo en el menú de aplicaciones con esquinas redondeadas.
 
 ## 🔧 Desarrollo
 
