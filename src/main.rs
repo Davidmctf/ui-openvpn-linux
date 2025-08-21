@@ -4,11 +4,12 @@ use std::path::Path;
 use std::process::Command;
 use subprocess::{Exec, Redirection};
 
-#[cfg(any(feature = "gui", feature = "web"))]
+#[cfg(feature = "web")]
 mod ui;
 
 #[cfg(feature = "web")]
 mod desktop_app;
+
 
 /// Simple OpenVPN Manager for Linux
 /// 
@@ -46,9 +47,6 @@ enum Commands {
         /// Name of the VPN connection to remove
         name: String 
     },
-    /// Launch GUI (if available)
-    #[cfg(feature = "gui")]
-    Gui,
     /// Launch Web Interface (if available)
     #[cfg(feature = "web")]
     Web,
@@ -71,8 +69,6 @@ async fn main() -> Result<()> {
         Commands::Disconnect => disconnect_vpn()?,
         Commands::Status => show_status()?,
         Commands::Remove { name } => remove_vpn(&name)?,
-        #[cfg(feature = "gui")]
-        Commands::Gui => launch_gui()?,
         #[cfg(feature = "web")]
         Commands::Web => launch_web().await?,
         #[cfg(feature = "web")]
@@ -285,12 +281,6 @@ fn remove_vpn(name: &str) -> Result<()> {
     Ok(())
 }
 
-#[cfg(feature = "gui")]
-fn launch_gui() -> Result<()> {
-    println!("🎨 Launching GUI...");
-    ui::run_simple_gui();
-    Ok(())
-}
 
 #[cfg(feature = "web")]
 async fn launch_web() -> Result<()> {
@@ -307,5 +297,7 @@ async fn launch_desktop() -> Result<()> {
 #[cfg(feature = "web")]
 fn install_desktop() -> Result<()> {
     desktop_app::create_desktop_entry()?;
+    println!("✅ Desktop entry created successfully!");
     Ok(())
 }
+
