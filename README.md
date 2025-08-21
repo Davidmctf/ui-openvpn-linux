@@ -172,32 +172,56 @@ openvpn-manager import mi-nueva-estacion.ovpn
 cp mi-nueva-estacion.ovpn ~/.connectvpn.conf/
 ```
 
-## 🔧 Desarrollo
+## 🚀 Instalación
 
-### Prerequisitos:
+### Instalación Automática (Recomendada):
+```bash
+git clone https://github.com/Davidmctf/ui-openvpn-linux.git
+cd ui-openvpn-linux
+./install.sh
+```
+
+### Instalación Manual:
+
+#### Prerequisitos:
 ```bash
 # Rust toolchain
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
-# Dependencias sistema (Fedora)
+# Dependencias sistema (Fedora/RHEL)
 sudo dnf install -y NetworkManager openvpn NetworkManager-openvpn
+
+# Dependencias sistema (Ubuntu/Debian) 
+sudo apt install -y network-manager openvpn network-manager-openvpn
 ```
 
-### Compilar:
+#### Compilar e Instalar:
 ```bash
 git clone https://github.com/Davidmctf/ui-openvpn-linux.git
 cd ui-openvpn-linux
 
-# Web interface
+# Solo CLI
+cargo build --release
+
+# CLI + Web interface
 cargo build --release --features web
 
-# Tauri native app  
-cargo run --features web web       # Development
-cargo build --release --features web  # Production
+# Instalar globalmente
+sudo cp target/release/openvpn-manager /usr/local/bin/
 ```
 
-### Testing:
+## 🔧 Desarrollo
+
+### Testing y Development:
 ```bash
+# Ejecutar CLI directamente  
+cargo run -- list
+cargo run -- connect mi-vpn
+
+# Ejecutar web interface
+cargo run --features web -- web
+
+# Tests y linting
 cargo test                    # Unit tests
 cargo clippy                  # Linting  
 cargo fmt                     # Format code
@@ -205,14 +229,13 @@ cargo fmt                     # Format code
 
 ## 📦 Distribución
 
-### Paquetes Automáticos (Tauri):
+### Script de Instalación:
 ```bash
-cargo build --release --features web
-
-# Genera automáticamente:
-# - .deb para Ubuntu/Debian
-# - .rpm para Fedora/RHEL  
-# - .AppImage universal
+# El script install.sh maneja todo automáticamente:
+# - Compila con features web
+# - Instala en /usr/local/bin
+# - Crea desktop entry
+# - Verifica dependencias
 ```
 
 ### RPM Manual:

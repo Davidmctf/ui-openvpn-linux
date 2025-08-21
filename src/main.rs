@@ -53,8 +53,7 @@ enum Commands {
     /// Launch Desktop App (if available)
     #[cfg(feature = "web")]
     Desktop,
-    /// Create Desktop Entry (if available)
-    #[cfg(feature = "web")]
+    /// Install OpenVPN Manager with web interface
     Install,
 }
 
@@ -84,8 +83,7 @@ async fn run() -> Result<()> {
         Commands::Web => launch_web().await?,
         #[cfg(feature = "web")]
         Commands::Desktop => launch_desktop().await?,
-        #[cfg(feature = "web")]
-        Commands::Install => install_desktop()?,
+        Commands::Install => install_system()?,
     }
 
     Ok(())
@@ -102,6 +100,7 @@ fn run_sync() -> Result<()> {
         Commands::Disconnect => disconnect_vpn()?,
         Commands::Status => show_status()?,
         Commands::Remove { name } => remove_vpn(&name)?,
+        Commands::Install => install_system()?,
     }
 
     Ok(())
@@ -325,6 +324,69 @@ async fn launch_desktop() -> Result<()> {
 fn install_desktop() -> Result<()> {
     desktop_app::create_desktop_entry()?;
     println!("✅ Desktop entry created successfully!");
+    Ok(())
+}
+
+fn install_system() -> Result<()> {
+    use std::fs;
+    use std::os::unix::fs::PermissionsExt;
+    
+    println!("🚀 Installing OpenVPN Manager...");
+    
+    // 1. Copy binary to /usr/local/bin
+    let current_exe = std::env::current_exe()?;
+    let target_path = "/usr/local/bin/openvpn-manager";
+    
+    println!("📦 Installing binary to {}", target_path);
+    
+    // Check if we need sudo
+    if !Path::new("/usr/local/bin").is_dir() || !Path::new("/usr/local/bin").metadata()?.permissions().mode() & 0o200 != 0 {
+        println!("⚠️  Need sudo privileges to install to /usr/local/bin");
+        
+        let status = std::process::Command::new("sudo")
+            .args(&["cp", &current_exe.to_string_lossy(), target_path])
+            .status()?;
+            
+        if !status.success() {
+            println!("❌ Failed to copy binary. Try running with sudo.");
+            return Ok(());
+        }
+        
+        // Make executable
+        std::process::Command::new("sudo")
+            .args(&["chmod", "+x", target_path])
+            .status()?;
+    } else {
+        fs::copy(&current_exe, target_path)?;
+        let mut perms = fs::metadata(target_path)?.permissions();
+        perms.set_mode(0o755);
+        fs::set_permissions(target_path, perms)?;
+    }
+    
+    // 2. No aliases needed - keep original syntax
+    
+    // 3. Create desktop entry if web features available
+    #[cfg(feature = "web")]
+    {
+        println!("🖥️  Creating desktop entry...");
+        if let Err(e) = desktop_app::create_desktop_entry() {
+            println!("⚠️  Could not create desktop entry: {}", e);
+        } else {
+            println!("✅ Desktop entry created successfully!");
+        }
+    }
+    
+    println!("\n🎉 Installation completed!");
+    println!("📋 Available commands:");
+    println!("   openvpn-manager list              # List VPNs");  
+    println!("   openvpn-manager connect <name>    # Connect to VPN");
+    println!("   openvpn-manager disconnect        # Disconnect VPN");
+    println!("   openvpn-manager status            # Check status");
+    #[cfg(feature = "web")]
+    println!("   openvpn-manager web               # Launch web interface");
+    
+    println!("\n💡 Now you can use openvpn-manager from anywhere!");
+    
     Ok(())
 }
 
